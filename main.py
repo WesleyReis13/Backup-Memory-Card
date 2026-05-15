@@ -10,10 +10,11 @@ from google.auth.transport.requests import Request
 from googleapiclient.http import MediaFileUpload
 
 def backup_memory_card():
-    #print("Executando backup...")
+    print("Executando backup...")
     load_dotenv()
     file_path = os.getenv("FILE_PATH")
     folder_id = os.getenv("FOLDER_ID")
+    
 
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
@@ -38,29 +39,32 @@ def backup_memory_card():
     pasta = Path(file_path)
 
     for arquivo in pasta.iterdir():
+        
+            if arquivo.is_file():
 
-        if arquivo.is_file():
+                if arquivo.name == "Mcd001.ps2":
+                    file_id = os.getenv("FILE_ID1")
 
-            file_metadata = {
-                'name': arquivo.name,
-                'parents': [folder_id]
-            }
+                elif arquivo.name == "Mcd002.ps2":
+                    file_id = os.getenv("FILE_ID2")
+
+                else:
+                    continue
 
             media = MediaFileUpload(
                 str(arquivo),
                 resumable=True
             )
 
-            uploaded_file = drive_service.files().create(
-                body=file_metadata,
+            uploaded_file = drive_service.files().update(
+                fileId=file_id,
                 media_body=media,
-                fields='id'
             ).execute()
 
             print(f'{arquivo.name} enviado!')
 
 
-schedule.every().day.at("10:31").do(backup_memory_card)
+schedule.every().day.at("11:19").do(backup_memory_card)
 
 
 while True:

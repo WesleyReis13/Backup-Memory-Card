@@ -64,7 +64,7 @@ def backup_memory_card():
             print(f'{arquivo.name} enviado!')
 
 
-schedule.every().day.at("11:19").do(backup_memory_card)
+schedule.every().day.at("14:46").do(backup_memory_card)
 
 
 while True:
